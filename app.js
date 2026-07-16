@@ -74,9 +74,23 @@ function cardTemplate(card, compact = false, includeSource = true, variant = '')
           <span class="retreat" aria-label="Retreat cost">↩ ${card.tenureYears || 1}</span>
         </div>
         <p class="flavor-text">${card.bioFlavor}</p>
+        ${card.quoteWall ? `
+          <aside class="quote-wall" aria-label="Quote Wall lore">
+            <span>Quote Wall</span>
+            <blockquote>“${card.quoteWall}”</blockquote>
+          </aside>
+        ` : ''}
         ${includeSource ? `<a class="card-action" href="${card.profileUrl}" target="_blank" rel="noreferrer">Profile source</a>` : ''}
       </div>
     </article>
+  `;
+}
+
+function cardLinkTemplate(card, variant = '') {
+  return `
+    <a class="card-link" href="#card/${encodeURIComponent(card.id)}" aria-label="View details for ${card.name}">
+      ${cardTemplate(card, true, false, variant)}
+    </a>
   `;
 }
 
@@ -96,12 +110,13 @@ function classSlug(value) {
 
 function renderHand() {
   byId('hand').innerHTML = state.hand.map((card) => `
-    <button class="card-button" type="button" data-id="${card.id}" aria-label="Choose ${card.name}">
-      ${cardTemplate(card, true, false)}
-    </button>
+    <div class="hand-card">
+      ${cardLinkTemplate(card, 'hand-card-preview')}
+      <button class="choose-card" type="button" data-id="${card.id}">Choose ${card.name.split(' ')[0]}</button>
+    </div>
   `).join('');
 
-  document.querySelectorAll('.card-button').forEach((button) => {
+  document.querySelectorAll('.choose-card').forEach((button) => {
     button.addEventListener('click', () => selectCard(button.dataset.id));
   });
 }
@@ -115,13 +130,13 @@ function renderLibrary() {
     return matchesQuery && matchesClass;
   });
 
-  byId('library').innerHTML = cards.map((card) => cardTemplate(card, true)).join('');
+  byId('library').innerHTML = cards.map((card) => cardLinkTemplate(card, 'library-card')).join('');
 }
 
 function selectCard(id) {
   state.selectedCard = state.hand.find((card) => card.id === id);
-  document.querySelectorAll('.card-button .card').forEach((card) => card.classList.remove('selected'));
-  document.querySelector(`[data-id="${id}"] .card`).classList.add('selected');
+  document.querySelectorAll('.hand-card .card').forEach((card) => card.classList.remove('selected'));
+  document.querySelector(`.choose-card[data-id="${id}"]`)?.closest('.hand-card')?.querySelector('.card')?.classList.add('selected');
   byId('playerSlot').innerHTML = cardTemplate(state.selectedCard, true, false, 'battle-card');
   byId('status').textContent = `2. Choose the move ${state.selectedCard.name} will use.`;
   updateBattleButton();
@@ -259,6 +274,54 @@ function newMatch() {
   updateBattleButton();
 }
 
+function detailCardId() {
+  const match = window.location.hash.match(/^#card\/(.+)$/);
+  return match ? decodeURIComponent(match[1]) : null;
+}
+
+function closeCardDetail() {
+  const dialog = byId('cardDetail');
+  if (dialog.open) dialog.close();
+  if (detailCardId()) history.replaceState('', document.title, window.location.pathname + window.location.search);
+}
+
+function syncCardDetail() {
+  const id = detailCardId();
+  const dialog = byId('cardDetail');
+  if (!id) {
+    if (dialog.open) dialog.close();
+    return;
+  }
+
+  const card = state.deck.find((item) => item.id === id);
+  if (!card) return;
+
+  const isInHand = state.hand.some((item) => item.id === card.id);
+  byId('cardDetailContent').innerHTML = `
+    <div class="detail-heading">
+      <p>Techrangers card file</p>
+      <h2 id="cardDetailTitle">${card.name}</h2>
+    </div>
+    <div class="detail-card-wrap">${cardTemplate(card, false, false, 'detail-card')}</div>
+    <div class="detail-notes">
+      <p><strong>Career trail</strong>${card.workedAt?.length ? card.workedAt.join(' · ') : 'Techrangers alumni roster'}</p>
+      <p><strong>Legend</strong>${card.bioFlavor}</p>
+    </div>
+    <div class="detail-actions">
+      ${isInHand ? `<button id="chooseDetailCard" type="button" data-id="${card.id}">Choose for this round</button>` : ''}
+      <a href="${card.profileUrl}" target="_blank" rel="noreferrer">Open profile source</a>
+    </div>
+  `;
+
+  byId('chooseDetailCard')?.addEventListener('click', (event) => {
+    selectCard(event.currentTarget.dataset.id);
+    closeCardDetail();
+    byId('playerSlot').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+
+  if (!dialog.open) dialog.showModal();
+}
+
 document.querySelectorAll('.stat-button').forEach((button) => {
   button.addEventListener('click', () => {
     document.querySelectorAll('.stat-button').forEach((item) => item.classList.remove('active'));
@@ -275,5 +338,14 @@ byId('newMatch').addEventListener('click', newMatch);
 byId('battleButton').addEventListener('click', battle);
 byId('search').addEventListener('input', renderLibrary);
 byId('classFilter').addEventListener('change', renderLibrary);
+byId('closeCardDetail').addEventListener('click', closeCardDetail);
+byId('cardDetail').addEventListener('click', (event) => {
+  if (event.target === byId('cardDetail')) closeCardDetail();
+});
+byId('cardDetail').addEventListener('close', () => {
+  if (detailCardId()) history.replaceState('', document.title, window.location.pathname + window.location.search);
+});
+window.addEventListener('hashchange', syncCardDetail);
 
 newMatch();
+syncCardDetail();
