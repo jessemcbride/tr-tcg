@@ -18,3 +18,8 @@ Open `http://127.0.0.1:8091`.
 - `data.js` - generated 216-card deck
 
 No build step or package install is required.
+
+## Deploy to GitHub Pages
+
+Pushes to `main` deploy automatically through `.github/workflows/deploy-pages.yml`.
+In the repository's **Settings → Pages**, set **Source** to **GitHub Actions** once.
