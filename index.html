@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Techrangers Alumni TCG</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="shell">
+    <section class="topbar" aria-label="Game header">
+      <div class="brand-lockup">
+        <img src="https://techrangers.cdl.ucf.edu/assets/images/robot/techrangers-robot-vector.svg" alt="" aria-hidden="true">
+        <div>
+        <p class="eyebrow">Techrangers Alumni Deck</p>
+        <h1>Roster Clash</h1>
+        </div>
+      </div>
+      <div class="scoreboard" aria-live="polite">
+        <span><strong id="deckCount">216</strong> cards</span>
+        <span><strong id="round">1</strong>/5 round</span>
+        <span><strong id="score">0</strong> score</span>
+        <span><strong>48</strong> max power</span>
+        <span><strong>42</strong> OG cards</span>
+      </div>
+    </section>
+
+    <section class="arena" aria-label="Battle arena">
+      <div class="panel hand-panel">
+        <div class="panel-heading">
+          <h2>Your Hand</h2>
+          <button id="newMatch" type="button">New Match</button>
+        </div>
+        <div id="hand" class="hand"></div>
+      </div>
+
+      <div class="panel battle-panel">
+        <div class="panel-heading">
+          <h2>Battle</h2>
+          <span id="status" class="status">Pick a card and a stat.</span>
+        </div>
+        <div class="stat-controls" role="group" aria-label="Choose battle stat">
+          <button class="stat-button active" data-stat="build" type="button">Build</button>
+          <button class="stat-button" data-stat="design" type="button">Design</button>
+          <button class="stat-button" data-stat="systems" type="button">Systems</button>
+          <button class="stat-button" data-stat="mentorship" type="button">Mentorship</button>
+        </div>
+        <div class="duel">
+          <div>
+            <p class="duel-label">You</p>
+            <div id="playerSlot" class="slot">Choose from your hand</div>
+          </div>
+          <div class="versus">VS</div>
+          <div>
+            <p class="duel-label">CPU</p>
+            <div id="cpuSlot" class="slot">Waiting</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="library">
+      <div class="panel">
+        <div class="panel-heading library-heading">
+          <div>
+            <h2>Card Library</h2>
+            <p>Cards are generated from Techrangers alumni/current roster data.</p>
+          </div>
+          <div class="filters">
+            <input id="search" type="search" placeholder="Search cards" aria-label="Search cards">
+            <select id="classFilter" aria-label="Filter by card class">
+              <option value="all">All classes</option>
+              <option value="Current Team">Current Team</option>
+              <option value="Team Lead">Team Lead</option>
+              <option value="Systems Builder">Systems Builder</option>
+              <option value="Creative Builder">Creative Builder</option>
+              <option value="Founding Era">Founding Era</option>
+              <option value="Application Builder">Application Builder</option>
+              <option value="Techranger">Techranger</option>
+            </select>
+          </div>
+        </div>
+        <div id="library" class="card-grid"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
