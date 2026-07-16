@@ -32,54 +32,62 @@ function drawCards(count) {
 }
 
 function cardTemplate(card, compact = false, includeSource = true) {
-  const stats = Object.entries(card.stats).map(([key, value]) => `
-    <div class="stat-row">
-      <span>${labels[key]}</span>
-      <span class="bar"><span style="width:${(value / 12) * 100}%"></span></span>
-      <strong>${value}</strong>
+  const moves = Object.entries(card.stats).map(([key, value]) => `
+    <div class="move-row">
+      <span class="energy" aria-hidden="true">${energyMarks(key)}</span>
+      <strong>${labels[key]}</strong>
+      <span class="move-damage">${value * 10}</span>
     </div>
   `).join('');
-  const workedAt = card.workedAt?.length
-    ? `<div class="worked-at"><span>Also worked at</span><strong>${card.workedAt.slice(0, 3).join(' / ')}</strong></div>`
-    : '';
-  const badges = card.badges?.length
-    ? `<div class="badges">${card.badges.map((badge) => `<span>${badge}</span>`).join('')}</div>`
-    : '';
+  const careerTrail = card.workedAt?.length
+    ? `<span>Career trail: ${card.workedAt.slice(0, 2).join(' · ')}</span>`
+    : `<span>${card.tenure} Techranger</span>`;
 
   return `
     <article class="card ${compact ? 'compact' : ''} ${classSlug(card.className)}">
-      <div class="portrait">
-        <span class="card-class ${classSlug(card.className)}">${card.className}</span>
-        <img src="${card.imageUrl}" alt="Photo of ${card.name}" loading="lazy">
-      </div>
-      <div class="card-body">
+      <div class="card-shine" aria-hidden="true"></div>
+      <header class="card-header">
         <div>
           <div class="name">${card.name}</div>
           <div class="title">${card.title}</div>
         </div>
-        <div class="meta">
+        <div class="hp"><span>HP</span><strong>${card.power}</strong></div>
+      </header>
+      <div class="portrait">
+        <img src="${card.imageUrl}" alt="Photo of ${card.name}" loading="lazy">
+        <span class="card-class">${card.className}</span>
+        <span class="level">Lv. ${Math.min(99, Math.max(1, card.tenureYears || 1) * 8)}</span>
+      </div>
+      <div class="card-body">
+        <div class="type-line">
+          <span class="type-symbol" aria-hidden="true">✦</span>
+          <strong>${card.className}</strong>
           <span>${card.tenure}</span>
-          <span>${card.tenureYears || 1} yr${card.tenureYears === 1 ? '' : 's'}</span>
         </div>
-        ${badges}
-        <div class="power-line">
-          <span>Power</span>
-          <strong>${card.power}/${card.maxPower}</strong>
-        </div>
-        <div class="stats">${stats}</div>
-        ${workedAt}
-        <div class="legend-box">
-          <span>Legend</span>
-          <p>${card.bioFlavor}</p>
-        </div>
-        <div class="effect-box">
-          <span>${card.effect.name}</span>
+        <div class="ability-box">
+          <span>Ability · ${card.effect.name}</span>
           <p>${card.effect.text}</p>
         </div>
+        <div class="moves">${moves}</div>
+        <div class="card-foot">
+          ${careerTrail}
+          <span class="retreat" aria-label="Retreat cost">↩ ${card.tenureYears || 1}</span>
+        </div>
+        <p class="flavor-text">${card.bioFlavor}</p>
         ${includeSource ? `<a class="card-action" href="${card.profileUrl}" target="_blank" rel="noreferrer">Profile source</a>` : ''}
       </div>
     </article>
   `;
+}
+
+function energyMarks(stat) {
+  const mark = {
+    build: '●',
+    design: '◆',
+    systems: '✦',
+    mentorship: '♥',
+  }[stat];
+  return mark.repeat(2);
 }
 
 function classSlug(value) {
