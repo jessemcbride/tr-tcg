@@ -16,8 +16,10 @@ body {
   margin: 0;
   color: #fff;
   font-family: Poppins, ui-sans-serif, system-ui, sans-serif;
-  background-color: var(--blue);
-  background-image: url("https://techrangers.cdl.ucf.edu/assets/images/background-pattern.svg");
+  background-color: #f5f7fb;
+  background-image:
+    linear-gradient(rgba(245, 247, 251, .92), rgba(245, 247, 251, .92)),
+    url("https://techrangers.cdl.ucf.edu/assets/images/background-pattern.svg");
   background-size: 310px;
 }
 
@@ -80,8 +82,10 @@ button:hover { color: #000; background: #fff; transform: translateY(-1px); }
   gap: 24px;
   padding: 16px 20px;
   border-radius: 0;
-  background: var(--blue);
-  background-image: url("https://techrangers.cdl.ucf.edu/assets/images/background-pattern.svg");
+  background: #8db4da;
+  background-image:
+    linear-gradient(rgba(102, 158, 209, .82), rgba(102, 158, 209, .82)),
+    url("https://techrangers.cdl.ucf.edu/assets/images/background-pattern.svg");
 }
 
 .brand-lockup { display: flex; align-items: center; gap: 14px; }
@@ -331,9 +335,24 @@ h2 {
 
 .duel { display: grid; grid-template-columns: 1fr 42px 1fr; align-items: start; gap: 8px; }
 .duel-label { margin-bottom: 6px; font-size: .66rem; font-weight: 900; letter-spacing: .13em; text-transform: uppercase; }
-.versus { display: grid; place-items: center; min-height: 500px; color: var(--yellow); font-size: 1.1rem; font-weight: 900; text-shadow: none; }
-.slot { display: grid; min-height: 500px; place-items: center; overflow: hidden; padding: 8px; border: 3px dashed var(--yellow); border-radius: 0; background: #111; color: var(--muted); font-weight: 700; text-align: center; }
+.versus { display: grid; place-items: center; min-height: 430px; color: var(--yellow); font-size: 1.1rem; font-weight: 900; text-shadow: none; }
+.slot { display: grid; min-height: 430px; place-items: center; overflow: hidden; padding: 8px; border: 3px dashed var(--yellow); border-radius: 0; background: #111; color: var(--muted); font-weight: 700; text-align: center; }
 .slot .card { width: 100%; min-height: 0; }
+
+.slot .battle-card {
+  grid-template-rows: auto 180px auto;
+  min-height: 0;
+}
+
+.battle-card .ability-box,
+.battle-card .card-foot,
+.battle-card .flavor-text,
+.battle-card .card-action {
+  display: none;
+}
+
+.battle-card .card-body { gap: 4px; padding-bottom: 7px; }
+.battle-card .move-row { min-height: 18px; }
 
 .library { margin-top: 20px; }
 .library-heading { align-items: end; }
@@ -354,4 +373,5 @@ h2 {
   .duel { grid-template-columns: 1fr; }
   .versus { min-height: auto; padding: 4px; }
   .slot { min-height: 320px; }
+  .slot .battle-card { grid-template-rows: auto 170px auto; }
 }

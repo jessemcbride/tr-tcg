@@ -31,7 +31,7 @@ function drawCards(count) {
   return shuffle(available).slice(0, count);
 }
 
-function cardTemplate(card, compact = false, includeSource = true) {
+function cardTemplate(card, compact = false, includeSource = true, variant = '') {
   const moves = Object.entries(card.stats).map(([key, value]) => `
     <div class="move-row">
       <span class="energy" aria-hidden="true">${energyMarks(key)}</span>
@@ -44,7 +44,7 @@ function cardTemplate(card, compact = false, includeSource = true) {
     : `<span>${card.tenure} Techranger</span>`;
 
   return `
-    <article class="card ${compact ? 'compact' : ''} ${classSlug(card.className)}">
+    <article class="card ${compact ? 'compact' : ''} ${variant} ${classSlug(card.className)}">
       <div class="card-shine" aria-hidden="true"></div>
       <header class="card-header">
         <div>
@@ -122,7 +122,7 @@ function selectCard(id) {
   state.selectedCard = state.hand.find((card) => card.id === id);
   document.querySelectorAll('.card-button .card').forEach((card) => card.classList.remove('selected'));
   document.querySelector(`[data-id="${id}"] .card`).classList.add('selected');
-  byId('playerSlot').innerHTML = cardTemplate(state.selectedCard, true);
+  byId('playerSlot').innerHTML = cardTemplate(state.selectedCard, true, false, 'battle-card');
   byId('status').textContent = `2. Choose the move ${state.selectedCard.name} will use.`;
   updateBattleButton();
 }
@@ -137,7 +137,7 @@ function battle() {
   const cpuValue = cpuResolved.value;
   const delta = playerValue - cpuValue;
 
-  byId('cpuSlot').innerHTML = cardTemplate(cpuCard, true);
+  byId('cpuSlot').innerHTML = cardTemplate(cpuCard, true, false, 'battle-card');
   state.usedIds.add(state.selectedCard.id);
   state.usedIds.add(cpuCard.id);
   state.hand = state.hand.filter((card) => card.id !== state.selectedCard.id);
