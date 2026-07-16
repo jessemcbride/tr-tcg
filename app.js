@@ -68,7 +68,7 @@ function cardTemplate(card, compact = false, includeSource = true, variant = '')
           <span>Ability · ${card.effect.name}</span>
           <p>${card.effect.text}</p>
         </div>
-        <div class="moves">${moves}</div>
+        <div class="moves"><span class="moves-label">Ranger moves</span>${moves}</div>
         <div class="card-foot">
           ${careerTrail}
           <span class="retreat" aria-label="Retreat cost">↩ ${card.tenureYears || 1}</span>
