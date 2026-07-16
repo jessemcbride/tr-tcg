@@ -123,8 +123,8 @@ function selectCard(id) {
   document.querySelectorAll('.card-button .card').forEach((card) => card.classList.remove('selected'));
   document.querySelector(`[data-id="${id}"] .card`).classList.add('selected');
   byId('playerSlot').innerHTML = cardTemplate(state.selectedCard, true);
-  byId('status').textContent = `Ready: ${state.selectedCard.name} on ${labels[state.selectedStat]}.`;
-  battle();
+  byId('status').textContent = `2. Choose the move ${state.selectedCard.name} will use.`;
+  updateBattleButton();
 }
 
 function battle() {
@@ -147,7 +147,7 @@ function battle() {
 
   if (delta > 0 || (playerWinsTie && !cpuWinsTie)) {
     state.score += 3 + delta;
-    byId('status').textContent = `${state.selectedCard.name} wins ${labels[state.selectedStat]} ${playerValue}-${cpuValue}. ${playerResolved.note}`;
+    byId('status').textContent = `${state.selectedCard.name} used ${labels[state.selectedStat]} and wins ${playerValue}-${cpuValue}. ${playerResolved.note}`;
   } else if (delta < 0 || cpuWinsTie) {
     state.score += 1;
     byId('status').textContent = `${cpuCard.name} takes the round ${cpuValue}-${playerValue}. ${cpuResolved.note}`;
@@ -164,6 +164,18 @@ function battle() {
 
   updateHud();
   renderHand();
+  updateBattleButton();
+}
+
+function updateBattleButton() {
+  const button = byId('battleButton');
+  const matchComplete = state.round > 5;
+  button.disabled = !state.selectedCard || matchComplete;
+  button.textContent = matchComplete
+    ? 'Match complete — start a new match'
+    : state.selectedCard
+      ? `Use ${labels[state.selectedStat]}`
+      : 'Choose a Ranger first';
 }
 
 function resolveValue(card, opponent, stat) {
@@ -239,11 +251,12 @@ function newMatch() {
   state.round = 1;
   state.score = 0;
   byId('playerSlot').textContent = 'Choose from your hand';
-  byId('cpuSlot').textContent = 'Waiting';
-  byId('status').textContent = 'Pick a card and a stat.';
+  byId('cpuSlot').textContent = 'Opponent revealed when you start the round';
+  byId('status').textContent = '1. Pick a Ranger from your hand.';
   updateHud();
   renderHand();
   renderLibrary();
+  updateBattleButton();
 }
 
 document.querySelectorAll('.stat-button').forEach((button) => {
@@ -251,11 +264,15 @@ document.querySelectorAll('.stat-button').forEach((button) => {
     document.querySelectorAll('.stat-button').forEach((item) => item.classList.remove('active'));
     button.classList.add('active');
     state.selectedStat = button.dataset.stat;
-    byId('status').textContent = `Stat set to ${labels[state.selectedStat]}.`;
+    byId('status').textContent = state.selectedCard
+      ? `3. ${state.selectedCard.name} is ready to use ${labels[state.selectedStat]}.`
+      : `Move set to ${labels[state.selectedStat]}. Now pick a Ranger.`;
+    updateBattleButton();
   });
 });
 
 byId('newMatch').addEventListener('click', newMatch);
+byId('battleButton').addEventListener('click', battle);
 byId('search').addEventListener('input', renderLibrary);
 byId('classFilter').addEventListener('change', renderLibrary);
 

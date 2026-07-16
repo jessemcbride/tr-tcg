@@ -15,8 +15,9 @@
       <div class="brand-lockup">
         <img src="https://techrangers.cdl.ucf.edu/assets/images/robot/techrangers-robot-vector.svg" alt="" aria-hidden="true">
         <div>
-        <p class="eyebrow">Techrangers Trainer League</p>
-        <h1>Roster League</h1>
+        <p class="eyebrow">Techrangers Alumni Deck</p>
+        <h1>Roster</h1>
+        <p class="brand-subtitle">Clash!</p>
         </div>
       </div>
       <div class="scoreboard" aria-live="polite">
@@ -39,15 +40,17 @@
 
       <div class="panel battle-panel">
         <div class="panel-heading">
-          <h2>Battle</h2>
-          <span id="status" class="status">Choose a Ranger, then select a move.</span>
+          <h2>Battle a Ranger</h2>
+          <span id="status" class="status">1. Pick a Ranger from your hand.</span>
         </div>
+        <p class="battle-help"><strong>1</strong> Pick a Ranger <span>→</span> <strong>2</strong> Pick a move <span>→</span> <strong>3</strong> Start the round</p>
         <div class="stat-controls" role="group" aria-label="Choose battle stat">
           <button class="stat-button active" data-stat="build" type="button">Build</button>
           <button class="stat-button" data-stat="design" type="button">Design</button>
           <button class="stat-button" data-stat="systems" type="button">Systems</button>
           <button class="stat-button" data-stat="mentorship" type="button">Mentorship</button>
         </div>
+        <button id="battleButton" class="battle-button" type="button" disabled>Choose a Ranger first</button>
         <div class="duel">
           <div>
             <p class="duel-label">You</p>
@@ -56,7 +59,7 @@
           <div class="versus">VS</div>
           <div>
             <p class="duel-label">CPU</p>
-            <div id="cpuSlot" class="slot">Waiting</div>
+            <div id="cpuSlot" class="slot">Opponent revealed when you start the round</div>
           </div>
         </div>
       </div>
